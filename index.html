@@ -1,41 +1,34 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Анализ ФИО</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Тест модального окна</title>
+<link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
 
-    <div class="container">
-        <h1>Анализ ФИО</h1>
+<div class="container">
+    <h3>Тест анализа</h3>
 
-        <div class="block">
-            <h2>Как в накладной</h2>
-            <input id="wrong-last" type="text" placeholder="Фамилия">
-            <input id="wrong-first" type="text" placeholder="Имя">
-            <input id="wrong-middle" type="text" placeholder="Отчество">
-        </div>
+    <input id="n-last" placeholder="Фамилия (накладная)">
+    <input id="n-first" placeholder="Имя (накладная)">
+    <input id="n-mid" placeholder="Отчество (накладная)">
 
-        <div class="block">
-            <h2>Как по паспорту</h2>
-            <input id="correct-last" type="text" placeholder="Фамилия">
-            <input id="correct-first" type="text" placeholder="Имя">
-            <input id="correct-middle" type="text" placeholder="Отчество">
-        </div>
+    <input id="c-last" placeholder="Фамилия (корректно)">
+    <input id="c-first" placeholder="Имя (корректно)">
+    <input id="c-mid" placeholder="Отчество (корректно)">
 
-        <button id="analyze">Анализировать</button>
+    <button onclick="analyzeFio()">Анализировать</button>
+</div>
 
-        <div id="result" class="result"></div>
+<!-- МОДАЛКА -->
+<div class="modal-bg" id="modal-bg">
+    <div class="modal-window">
+        <h2 id="modal-text"></h2>
+        <button onclick="closeModal()">OK</button>
     </div>
+</div>
 
-    <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
-
 </html>
-
-
-
