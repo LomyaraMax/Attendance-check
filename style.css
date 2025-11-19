@@ -7,6 +7,7 @@
     --shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
+/* База */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background: var(--bg);
@@ -15,6 +16,7 @@ body {
     color: var(--text);
 }
 
+/* Основной контейнер */
 .container {
     max-width: 520px;
     margin: auto;
@@ -24,6 +26,7 @@ body {
     box-shadow: var(--shadow);
 }
 
+/* Заголовок */
 h1 {
     text-align: center;
     color: var(--main);
@@ -38,10 +41,12 @@ h2 {
     color: var(--main);
 }
 
+/* Блоки */
 .block {
     margin-bottom: 25px;
 }
 
+/* Поля ввода */
 input {
     width: 100%;
     padding: 14px;
@@ -50,6 +55,9 @@ input {
     border-radius: var(--radius);
     font-size: 16px;
     transition: 0.2s;
+
+    /* ФИКС: чтобы инпуты НЕ вылезали из контейнера */
+    box-sizing: border-box;
 }
 
 input:focus {
@@ -58,6 +66,7 @@ input:focus {
     box-shadow: 0 0 5px rgba(237, 28, 36, 0.4);
 }
 
+/* Кнопка */
 button {
     width: 100%;
     padding: 15px;
@@ -76,6 +85,7 @@ button:hover {
     background: #c9151c;
 }
 
+/* Результат */
 .result {
     margin-top: 20px;
     padding: 18px;
@@ -112,3 +122,4 @@ button:hover {
         font-size: 18px;
     }
 }
+
