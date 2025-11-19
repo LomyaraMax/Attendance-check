@@ -1,28 +1,37 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<title>Тест модального окна</title>
-<link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Анализатор ФИО</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="container">
-    <h3>Тест анализа</h3>
+    <h1>Анализатор ФИО</h1>
 
-    <input id="n-last" placeholder="Фамилия (накладная)">
-    <input id="n-first" placeholder="Имя (накладная)">
-    <input id="n-mid" placeholder="Отчество (накладная)">
+    <!-- Блок №1 -->
+    <div class="block">
+        <h2>Как в накладной</h2>
+        <input id="n-last" type="text" placeholder="Фамилия">
+        <input id="n-first" type="text" placeholder="Имя">
+        <input id="n-mid" type="text" placeholder="Отчество">
+    </div>
 
-    <input id="c-last" placeholder="Фамилия (корректно)">
-    <input id="c-first" placeholder="Имя (корректно)">
-    <input id="c-mid" placeholder="Отчество (корректно)">
+    <!-- Блок №2 -->
+    <div class="block">
+        <h2>Корректное ФИО</h2>
+        <input id="c-last" type="text" placeholder="Фамилия">
+        <input id="c-first" type="text" placeholder="Имя">
+        <input id="c-mid" type="text" placeholder="Отчество">
+    </div>
 
     <button onclick="analyzeFio()">Анализировать</button>
 </div>
 
 <!-- МОДАЛКА -->
-<div class="modal-bg" id="modal-bg">
+<div id="modal-bg" class="modal-bg">
     <div class="modal-window">
         <h2 id="modal-text"></h2>
         <button onclick="closeModal()">OK</button>
