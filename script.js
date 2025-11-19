@@ -1,31 +1,72 @@
-// Подсчёт ошибок между строками (как расстояние Левенштейна)
-function countMistakes(a, b) {
-    a = a.toLowerCase().trim();
-    b = b.toLowerCase().trim();
+// 🔹 Словарь созвучных букв RU ↔ UA
+const similarLetters = {
+    "а": ["а"],
+    "е": ["е", "є"],
+    "ё": ["е", "йо", "ьо"],
+    "и": ["и", "і", "ы"],
+    "й": ["й"],
+    "о": ["о"],
+    "у": ["у"],
+    "ы": ["и"],
+    "э": ["е"],
+    "ю": ["ю"],
+    "я": ["я"],
+    "г": ["г", "ґ"],
+    "к": ["к"],
+    "х": ["х"],
+    "і": ["и", "і"],
+    "є": ["е"],
+    "ґ": ["г"]
+};
 
-    const dp = Array(b.length + 1)
-        .fill(null)
-        .map(() => Array(a.length + 1).fill(0));
+// 🔹 Функция подсчета "ошибок" с учётом созвучных букв
+function countSurnameErrors(input, correct) {
+    input = input.trim().toLowerCase();
+    correct = correct.trim().toLowerCase();
 
-    for (let i = 0; i <= a.length; i++) dp[0][i] = i;
-    for (let i = 0; i <= b.length; i++) dp[i][0] = i;
+    if (input === correct) return { nonSimilar: 0, similar: 0 };
 
-    for (let i = 1; i <= b.length; i++) {
-        for (let j = 1; j <= a.length; j++) {
-            const cost = a[j - 1] === b[i - 1] ? 0 : 1;
-            dp[i][j] = Math.min(
-                dp[i - 1][j] + 1,
-                dp[i][j - 1] + 1,
-                dp[i - 1][j - 1] + cost
-            );
+    if (input.length !== correct.length) {
+        // Разная длина → несозвучная ошибка
+        return { nonSimilar: 1, similar: 0 };
+    }
+
+    let similarCount = 0;
+    let nonSimilarCount = 0;
+
+    for (let i = 0; i < correct.length; i++) {
+        const a = input[i];
+        const b = correct[i];
+
+        if (a === b) continue;
+
+        if (similarLetters[a] && similarLetters[a].includes(b)) {
+            similarCount++;
+        } else {
+            nonSimilarCount++;
         }
     }
 
-    return dp[b.length][a.length];
+    return { nonSimilar: nonSimilarCount, similar: similarCount };
 }
 
-function analyzeFio() {
+// 🔹 Функция подсчета ошибок имени/отчества
+function countErrors(a, b) {
+    a = a.trim().toLowerCase();
+    b = b.trim().toLowerCase();
 
+    const len = Math.max(a.length, b.length);
+    let errors = 0;
+
+    for (let i = 0; i < len; i++) {
+        if (a[i] !== b[i]) errors++;
+    }
+
+    return errors;
+}
+
+// 🔹 Главная функция анализа
+function analyzeFio() {
     const nLast = document.getElementById("n-last").value;
     const nFirst = document.getElementById("n-first").value;
     const nMid = document.getElementById("n-mid").value;
@@ -34,33 +75,41 @@ function analyzeFio() {
     const cFirst = document.getElementById("c-first").value;
     const cMid = document.getElementById("c-mid").value;
 
-    // Проверка "перепутанных местами" ФИО
-    const inputArray = [nLast, nFirst, nMid].map(s => s.trim().toLowerCase());
-    const correctArray = [cLast, cFirst, cMid].map(s => s.trim().toLowerCase());
+    // --- Анализ фамилии ---
+    const surnameErrors = countSurnameErrors(nLast, cLast);
+    const mistakesFirst = countErrors(nFirst, cFirst);
+    const mistakesMid = countErrors(nMid, cMid);
+    const totalNameErrors = mistakesFirst + mistakesMid;
 
-    if (inputArray.sort().join("|") === correctArray.sort().join("|")) {
-        return showModal("Самостоятельно (поля перепутаны местами)");
+    let result = "";
+
+    // Если есть хотя бы одна несозвучная ошибка → ВОПЗК
+    if (surnameErrors.nonSimilar > 0) {
+        result = "Через ВОПЗК";
+    }
+    // Если 2+ созвучных ошибок → ВОПЗК
+    else if (surnameErrors.similar >= 2) {
+        result = "Через ВОПЗК";
+    }
+    // Если 1 созвучная ошибка + есть ошибки в имени/отчестве → ВОПЗК
+    else if (surnameErrors.similar === 1 && totalNameErrors > 0) {
+        result = "Через ВОПЗК";
+    }
+    // Иначе фамилия ок или 1 созвучная + имя/отчество ок → Самостоятельно
+    else if ((surnameErrors.similar === 0 || surnameErrors.similar === 1) && totalNameErrors <= 2) {
+        result = "Самостоятельно";
+    }
+    // Если имя/отчество >2 ошибок → ВОПЗК
+    else if (totalNameErrors > 2) {
+        result = "Через ВОПЗК";
+    } else {
+        result = "Самостоятельно";
     }
 
-    // Анализ количества ошибок
-    const mistakesLast = countMistakes(nLast, cLast);
-    const mistakesFirst = countMistakes(nFirst, cFirst);
-    const mistakesMid = countMistakes(nMid, cMid);
-
-    // Если фамилия с ошибкой → ВОПЗК
-    if (mistakesLast > 0) {
-        return showModal("Через ВОПЗК (ошибка в фамилии)");
-    }
-
-    // Имя + отчество: допускается максимум 2 ошибки
-    if (mistakesFirst + mistakesMid <= 2) {
-        return showModal("Самостоятельно");
-    }
-
-    return showModal("Через ВОПЗК");
+    showModal(result);
 }
 
-/* === Модалка === */
+// 🔹 Модальное окно
 function showModal(text) {
     document.getElementById("modal-text").innerText = text;
     document.getElementById("modal-bg").style.display = "flex";
