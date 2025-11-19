@@ -1,125 +1,113 @@
-:root {
-    --main: #ed1c24;
-    --bg: #f6f6f6;
-    --card-bg: #ffffff;
-    --text: #333;
-    --radius: 12px;
-    --shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-}
-
-/* База */
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg);
+* {
     margin: 0;
-    padding: 20px;
-    color: var(--text);
-}
-
-/* Основной контейнер */
-.container {
-    max-width: 520px;
-    margin: auto;
-    background: var(--card-bg);
-    padding: 25px;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-}
-
-/* Заголовок */
-h1 {
-    text-align: center;
-    color: var(--main);
-    margin-bottom: 25px;
-    font-size: 28px;
-    letter-spacing: 1px;
-}
-
-h2 {
-    margin-bottom: 10px;
-    font-size: 18px;
-    color: var(--main);
-}
-
-/* Блоки */
-.block {
-    margin-bottom: 25px;
-}
-
-/* Поля ввода */
-input {
-    width: 100%;
-    padding: 14px;
-    margin: 7px 0;
-    border: 2px solid #ddd;
-    border-radius: var(--radius);
-    font-size: 16px;
-    transition: 0.2s;
-
-    /* ФИКС: чтобы инпуты НЕ вылезали из контейнера */
+    padding: 0;
     box-sizing: border-box;
 }
 
+body {
+    background: #f5f5f5;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+.container {
+    max-width: 500px;
+    background: white;
+    padding: 20px;
+    margin: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Заголовок блоков */
+h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #ed1c24;
+}
+
+/* Инпуты */
+input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
 input:focus {
-    border-color: var(--main);
-    outline: none;
-    box-shadow: 0 0 5px rgba(237, 28, 36, 0.4);
+    border-color: #ed1c24;
 }
 
 /* Кнопка */
 button {
     width: 100%;
-    padding: 15px;
-    background: var(--main);
-    color: white;
+    padding: 14px;
     font-size: 18px;
+    background: #ed1c24;
+    color: white;
     border: none;
-    border-radius: var(--radius);
+    border-radius: 8px;
     cursor: pointer;
     margin-top: 10px;
-    transition: 0.2s;
-    font-weight: bold;
+    transition: 0.3s;
 }
 
 button:hover {
-    background: #c9151c;
+    background: #c7161c;
 }
 
-/* Результат */
-.result {
-    margin-top: 20px;
-    padding: 18px;
-    border-radius: var(--radius);
-    background: #ffe8e9;
-    border-left: 5px solid var(--main);
-    font-size: 20px;
-    text-align: center;
-    font-weight: bold;
+/* МОДАЛЬНОЕ ОКНО */
+
+.modal-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.55);
     display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
 }
 
-/* --- Адаптив --- */
+.modal-window {
+    background: white;
+    padding: 25px;
+    width: 85%;
+    max-width: 400px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.modal-window h2 {
+    margin-bottom: 15px;
+    color: #ed1c24;
+}
+
+.modal-window button {
+    margin-top: 15px;
+    background: #ed1c24;
+    color: white;
+}
+
+/* Чтобы адаптация была нормальной */
 @media (max-width: 480px) {
     .container {
-        padding: 18px;
-    }
-
-    h1 {
-        font-size: 24px;
+        padding: 15px;
     }
 
     input {
-        font-size: 15px;
-        padding: 12px;
+        padding: 10px;
     }
 
     button {
-        font-size: 17px;
-        padding: 13px;
-    }
-
-    .result {
-        font-size: 18px;
+        padding: 12px;
+        font-size: 16px;
     }
 }
 
