@@ -1,67 +1,45 @@
-// --- Расстояние Левенштейна ---
-function levenshtein(a, b) {
-    a = a.toLowerCase();
-    b = b.toLowerCase();
-    const matrix = [];
+function analyzeFio() {
+    const nLast = document.getElementById('n-last').value.trim().toLowerCase();
+    const nFirst = document.getElementById('n-first').value.trim().toLowerCase();
+    const nMid = document.getElementById('n-mid').value.trim().toLowerCase();
 
-    for (let i = 0; i <= b.length; i++) matrix[i] = [i];
-    for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+    const cLast = document.getElementById('c-last').value.trim().toLowerCase();
+    const cFirst = document.getElementById('c-first').value.trim().toLowerCase();
+    const cMid = document.getElementById('c-mid').value.trim().toLowerCase();
 
-    for (let i = 1; i <= b.length; i++) {
-        for (let j = 1; j <= a.length; j++) {
-            matrix[i][j] = Math.min(
-                matrix[i - 1][j] + 1,
-                matrix[i][j - 1] + 1,
-                matrix[i - 1][j - 1] + (a[j - 1] === b[i - 1] ? 0 : 1)
-            );
+    let result = "";
+
+    function diff(a, b) {
+        let errors = 0;
+        const len = Math.max(a.length, b.length);
+        for (let i = 0; i < len; i++) {
+            if (a[i] !== b[i]) errors++;
+        }
+        return errors;
+    }
+
+    // Если фамилия отличается хоть на 1 букву → ВОПЗК
+    if (diff(nLast, cLast) > 0) {
+        result = "Через ВОПЗК";
+    } else {
+        let errorsFirst = diff(nFirst, cFirst);
+        let errorsMid = diff(nMid, cMid);
+
+        if (errorsFirst + errorsMid <= 2) {
+            result = "Самостоятельно";
+        } else {
+            result = "Через ВОПЗК";
         }
     }
-    return matrix[b.length][a.length];
+
+    showModal(result);
 }
 
-// --- Анализ ---
-document.getElementById("analyze").onclick = function () {
-    let wl = document.getElementById("wrong-last").value.trim();
-    let wf = document.getElementById("wrong-first").value.trim();
-    let wm = document.getElementById("wrong-middle").value.trim();
+function showModal(text) {
+    document.getElementById("modal-text").innerText = text;
+    document.getElementById("modal-bg").style.display = "flex";
+}
 
-    let cl = document.getElementById("correct-last").value.trim();
-    let cf = document.getElementById("correct-first").value.trim();
-    let cm = document.getElementById("correct-middle").value.trim();
-
-    let res = document.getElementById("result");
-
-    // Проверка перепутанных полей
-    let swapped =
-        (wl === cf && wf === cl) ||
-        (wf === cm && wm === cf) ||
-        (wl === cf && wf === cm) ||
-        (wl === cf && wm === cl);
-
-    if (swapped) {
-        res.innerText = "Самостоятельно (поля перепутаны)";
-        res.style.display = "block";
-        return;
-    }
-
-    // --- Ошибка в фамилии = ВОПЗК ---
-    if (levenshtein(wl, cl) !== 0) {
-        res.innerText = "Через ВОПЗК (фамилия отличается)";
-        res.style.display = "block";
-        return;
-    }
-
-    // --- Подсчет ошибок ---
-    let errorsName = levenshtein(wf, cf);
-    let errorsMiddle = levenshtein(wm, cm);
-    let totalErrors = errorsName + errorsMiddle;
-
-    // --- Решение ---
-    if (totalErrors <= 2) {
-        res.innerText = `Самостоятельно (ошибок: ${totalErrors})`;
-    } else {
-        res.innerText = `Через ВОПЗК (ошибок: ${totalErrors})`;
-    }
-
-    res.style.display = "block";
-};
+function closeModal() {
+    document.getElementById("modal-bg").style.display = "none";
+}
