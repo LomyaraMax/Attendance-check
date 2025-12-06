@@ -1,121 +1,99 @@
-body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #ffffff, #ffe5e6);
-    margin: 0;
-    padding: 20px;
-    animation: bgFade 3s ease-in-out;
+document.getElementById("analyzeBtn").addEventListener("click", analyze);
+document.getElementById("closeModal").addEventListener("click", closeModal);
+
+const modal = document.getElementById("modal");
+const modalContent = document.querySelector(".modal-content");
+
+function closeModal() {
+    modal.style.display = "none";
 }
 
-/* Плавне появлення контейнера */
-.fade-in {
-    animation: fadeIn 0.8s ease-out;
+const similarLetters = {
+    "а": "a", "a": "а",
+    "е": "e", "e": "е",
+    "о": "o", "o": "о",
+    "р": "p", "p": "р",
+    "с": "c", "c": "с",
+    "і": "i", "i": "і",
+    "ї": "i", "й": "i",
+    "и": "y", "ы": "y"
+};
+
+function countDifferences(str1, str2) {
+    str1 = str1.toLowerCase();
+    str2 = str2.toLowerCase();
+
+    let errors = 0;
+    let similarErrors = 0;
+
+    for (let i = 0; i < Math.max(str1.length, str2.length); i++) {
+        let a = str1[i] || "";
+        let b = str2[i] || "";
+
+        if (a !== b) {
+            if (similarLetters[a] === b) similarErrors++;
+            else errors++;
+        }
+    }
+
+    return { errors, similarErrors };
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
+function analyze() {
+    let ln = document.getElementById("ln_input").value.trim();
+    let fn = document.getElementById("fn_input").value.trim();
+    let pt = document.getElementById("pt_input").value.trim();
+
+    let lnC = document.getElementById("ln_correct").value.trim();
+    let fnC = document.getElementById("fn_correct").value.trim();
+    let ptC = document.getElementById("pt_correct").value.trim();
+
+    let lnDiff = countDifferences(ln, lnC);
+    let fnDiff = countDifferences(fn, fnC);
+    let ptDiff = countDifferences(pt, ptC);
+
+    let totalErrors = fnDiff.errors + ptDiff.errors + fnDiff.similarErrors + ptDiff.similarErrors;
+
+    let result = "";
+
+    // Переплутані місцями
+    if (
+        (ln === fnC && fn === lnC) ||
+        (ln === ptC && pt === lnC) ||
+        (fn === ptC && pt === fnC)
+    ) {
+        result = "Рекомендується: <b>Самостійно</b>";
+    }
+
+    else if (lnDiff.errors === 0 && lnDiff.similarErrors === 1 && totalErrors === 1) {
+        result = "Рекомендується: <b>Самостійно</b>";
+    }
+
+    else if (lnDiff.errors > 0) {
+        result = "Рекомендується: <b>Через ВОПЗК</b>";
+    }
+
+    else if (lnDiff.similarErrors >= 2) {
+        result = "Рекомендується: <b>Через ВОПЗК</b>";
+    }
+
+    else if (totalErrors <= 2) {
+        result = "Рекомендується: <b>Самостійно</b>";
+    }
+
+    else {
+        result = "Рекомендується: <b>Через ВОПЗК</b>";
+    }
+
+    showModal(result);
 }
 
-.container {
-    max-width: 600px;
-    margin: auto;
-    background: white;
-    padding: 20px;
-    border-radius: 14px;
-    box-shadow: 0 8px 18px rgba(0,0,0,0.12);
-}
+function showModal(text) {
+    document.getElementById("modal-text").innerHTML = text;
+    modal.style.display = "flex";
 
-h1, h2 {
-    color: #ed1c24;
-    margin-bottom: 10px;
-}
-
-.block { margin-bottom: 25px; }
-
-.input-group {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 12px;
-}
-
-label { margin-bottom: 4px; font-weight: bold; }
-
-input {
-    padding: 12px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: 0.25s;
-}
-
-input:focus {
-    border-color: #ed1c24;
-    box-shadow: 0 0 8px rgba(237,28,36,0.3);
-    transform: scale(1.02);
-    outline: none;
-}
-
-/* Анімація кнопки */
-.btn-animate {
-    width: 100%;
-    padding: 14px;
-    background: #ed1c24;
-    border: none;
-    color: white;
-    font-size: 18px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.25s;
-}
-
-.btn-animate:hover {
-    background: #c4161d;
-    transform: scale(1.04);
-}
-
-.btn-animate:active {
-    transform: scale(0.98);
-}
-
-/* Модальне вікно */
-.modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.55);
-    justify-content: center;
-    align-items: center;
-    animation: fadeIn 0.3s;
-}
-
-/* Поп-ефект модального вікна */
-.pop {
-    animation: popIn 0.35s ease-out;
-}
-
-@keyframes popIn {
-    0% { transform: scale(0.7); opacity: 0; }
-    70% { transform: scale(1.06); opacity: 1; }
-    100% { transform: scale(1); }
-}
-
-.modal-content {
-    background: white;
-    padding: 20px;
-    width: 90%;
-    max-width: 350px;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 8px 18px rgba(0,0,0,0.25);
-}
-
-#closeModal {
-    margin-top: 15px;
-    width: 100%;
-    padding: 12px;
-    background: #ed1c24;
-    border: none;
-    color: white;
-    border-radius: 8px;
-    font-size: 16px;
+    // перезапуск анімації pop
+    modalContent.classList.remove("pop");
+    void modalContent.offsetWidth;
+    modalContent.classList.add("pop");
 }
