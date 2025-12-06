@@ -1,106 +1,121 @@
-:root {
-    --main: #ed1c24;
-    --bg: #f3f3f3;
-    --card: #fff;
-    --radius: 14px;
-    --shadow: 0 6px 20px rgba(0,0,0,0.1);
-}
-
-/* Общие стили */
 body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ffffff, #ffe5e6);
     margin: 0;
     padding: 20px;
-    background: var(--bg);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    animation: bgFade 3s ease-in-out;
 }
 
-/* Контейнер */
+/* Плавне появлення контейнера */
+.fade-in {
+    animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 .container {
-    max-width: 520px;
+    max-width: 600px;
     margin: auto;
-    padding: 25px;
-    background: var(--card);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.12);
 }
 
-h1 {
-    text-align: center;
-    color: var(--main);
-    margin-bottom: 25px;
-}
-
-h2 {
-    color: var(--main);
+h1, h2 {
+    color: #ed1c24;
     margin-bottom: 10px;
-    font-size: 18px;
 }
 
-.block {
-    margin-bottom: 25px;
+.block { margin-bottom: 25px; }
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
 }
 
-/* INPUT */
+label { margin-bottom: 4px; font-weight: bold; }
+
 input {
-    width: 100%;
-    padding: 12px 14px;
-    margin: 6px 0;
+    padding: 12px;
     border: 2px solid #ddd;
-    border-radius: var(--radius);
+    border-radius: 8px;
     font-size: 16px;
-    box-sizing: border-box;
-    transition: 0.2s;
+    transition: 0.25s;
 }
 
 input:focus {
-    border-color: var(--main);
-    box-shadow: 0 0 6px rgba(237, 28, 36, 0.35);
+    border-color: #ed1c24;
+    box-shadow: 0 0 8px rgba(237,28,36,0.3);
+    transform: scale(1.02);
     outline: none;
 }
 
-/* Кнопка */
-button {
+/* Анімація кнопки */
+.btn-animate {
     width: 100%;
-    padding: 15px;
-    margin-top: 10px;
+    padding: 14px;
+    background: #ed1c24;
     border: none;
-    background: var(--main);
-    color: #fff;
+    color: white;
     font-size: 18px;
-    border-radius: var(--radius);
+    border-radius: 10px;
     cursor: pointer;
-    transition: 0.2s;
-    font-weight: bold;
+    transition: 0.25s;
 }
 
-button:hover {
-    background: #c9151c;
+.btn-animate:hover {
+    background: #c4161d;
+    transform: scale(1.04);
 }
 
-/* Модалка */
-.modal-bg {
+.btn-animate:active {
+    transform: scale(0.98);
+}
+
+/* Модальне вікно */
+.modal {
+    display: none;
     position: fixed;
     inset: 0;
-    display: none;
+    background: rgba(0,0,0,0.55);
     justify-content: center;
     align-items: center;
-    background: rgba(0,0,0,0.55);
-    z-index: 10;
+    animation: fadeIn 0.3s;
 }
 
-.modal-window {
-    background: #fff;
-    padding: 25px;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    max-width: 320px;
+/* Поп-ефект модального вікна */
+.pop {
+    animation: popIn 0.35s ease-out;
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.7); opacity: 0; }
+    70% { transform: scale(1.06); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    width: 90%;
+    max-width: 350px;
+    border-radius: 12px;
     text-align: center;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.25);
 }
 
-.modal-window h2 {
-    margin-bottom: 20px;
-}
-
-.modal-window button {
+#closeModal {
+    margin-top: 15px;
     width: 100%;
+    padding: 12px;
+    background: #ed1c24;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    font-size: 16px;
 }
