@@ -1,40 +1,56 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Анализатор ФИО</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Аналізатор ПІБ</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<div class="container">
-    <h1>Анализатор ФИО</h1>
+<div class="container fade-in">
+    <h1>Аналізатор ПІБ для переказів</h1>
 
-    <!-- Блок №1 -->
     <div class="block">
-        <h2>Как в накладной</h2>
-        <input id="n-last" type="text" placeholder="Фамилия">
-        <input id="n-first" type="text" placeholder="Имя">
-        <input id="n-mid" type="text" placeholder="Отчество">
+        <h2>Як у накладній</h2>
+        <div class="input-group">
+            <label>Прізвище</label>
+            <input id="ln_input" type="text">
+        </div>
+        <div class="input-group">
+            <label>Імʼя</label>
+            <input id="fn_input" type="text">
+        </div>
+        <div class="input-group">
+            <label>По батькові</label>
+            <input id="pt_input" type="text">
+        </div>
     </div>
 
-    <!-- Блок №2 -->
     <div class="block">
-        <h2>Корректное ФИО</h2>
-        <input id="c-last" type="text" placeholder="Фамилия">
-        <input id="c-first" type="text" placeholder="Имя">
-        <input id="c-mid" type="text" placeholder="Отчество">
+        <h2>Правильне ПІБ</h2>
+        <div class="input-group">
+            <label>Прізвище</label>
+            <input id="ln_correct" type="text">
+        </div>
+        <div class="input-group">
+            <label>Імʼя</label>
+            <input id="fn_correct" type="text">
+        </div>
+        <div class="input-group">
+            <label>По батькові</label>
+            <input id="pt_correct" type="text">
+        </div>
     </div>
 
-    <button onclick="analyzeFio()">Анализировать</button>
+    <button id="analyzeBtn" class="btn-animate">Аналізувати</button>
 </div>
 
-<!-- МОДАЛКА -->
-<div id="modal-bg" class="modal-bg">
-    <div class="modal-window">
-        <h2 id="modal-text"></h2>
-        <button onclick="closeModal()">OK</button>
+<!-- Модальне вікно -->
+<div id="modal" class="modal">
+    <div class="modal-content pop">
+        <p id="modal-text"></p>
+        <button id="closeModal">Закрити</button>
     </div>
 </div>
 
