@@ -1,99 +1,95 @@
-document.getElementById("analyzeBtn").addEventListener("click", analyze);
-document.getElementById("closeModal").addEventListener("click", closeModal);
+// ---- Таблиця співзвучних букв ----
+const similarPairs = [
+    ["е", "є"], ["и", "і"], ["о", "а"], ["г", "ґ"], ["и", "ы"], ["е", "э"],
+    ["в","ў"], ["с","c"], ["і","ї"], ["ё","е"], ["у","ю"]
+];
 
-const modal = document.getElementById("modal");
-const modalContent = document.querySelector(".modal-content");
+// ---- Функція перевірки однієї пари слів ----
+function compareNames(n1, n2) {
+    n1 = n1.toLowerCase().trim();
+    n2 = n2.toLowerCase().trim();
 
-function closeModal() {
-    modal.style.display = "none";
-}
+    let mistakes = 0;
+    let similarMistakes = 0;
 
-const similarLetters = {
-    "а": "a", "a": "а",
-    "е": "e", "e": "е",
-    "о": "o", "o": "о",
-    "р": "p", "p": "р",
-    "с": "c", "c": "с",
-    "і": "i", "i": "і",
-    "ї": "i", "й": "i",
-    "и": "y", "ы": "y"
-};
+    const maxLen = Math.max(n1.length, n2.length);
 
-function countDifferences(str1, str2) {
-    str1 = str1.toLowerCase();
-    str2 = str2.toLowerCase();
-
-    let errors = 0;
-    let similarErrors = 0;
-
-    for (let i = 0; i < Math.max(str1.length, str2.length); i++) {
-        let a = str1[i] || "";
-        let b = str2[i] || "";
+    for (let i = 0; i < maxLen; i++) {
+        const a = n1[i] || "";
+        const b = n2[i] || "";
 
         if (a !== b) {
-            if (similarLetters[a] === b) similarErrors++;
-            else errors++;
+            mistakes++;
+
+            // перевірка чи букви співзвучні
+            const isSimilar = similarPairs.some(pair =>
+                pair.includes(a) && pair.includes(b)
+            );
+
+            if (isSimilar) similarMistakes++;
         }
     }
 
-    return { errors, similarErrors };
+    return { mistakes, similarMistakes };
 }
 
+// ---- Основний аналіз ----
 function analyze() {
-    let ln = document.getElementById("ln_input").value.trim();
-    let fn = document.getElementById("fn_input").value.trim();
-    let pt = document.getElementById("pt_input").value.trim();
+    const f1 = document.getElementById("surnameDoc").value;
+    const f2 = document.getElementById("surnameTtn").value;
 
-    let lnC = document.getElementById("ln_correct").value.trim();
-    let fnC = document.getElementById("fn_correct").value.trim();
-    let ptC = document.getElementById("pt_correct").value.trim();
+    const n1 = document.getElementById("nameDoc").value;
+    const n2 = document.getElementById("nameTtn").value;
 
-    let lnDiff = countDifferences(ln, lnC);
-    let fnDiff = countDifferences(fn, fnC);
-    let ptDiff = countDifferences(pt, ptC);
+    const p1 = document.getElementById("patronymicDoc").value;
+    const p2 = document.getElementById("patronymicTtn").value;
 
-    let totalErrors = fnDiff.errors + ptDiff.errors + fnDiff.similarErrors + ptDiff.similarErrors;
+    const sur = compareNames(f1, f2);
+    const name = compareNames(n1, n2);
+    const patr = compareNames(p1, p2);
 
-    let result = "";
+    let surnameOK = true;
 
-    // Переплутані місцями
-    if (
-        (ln === fnC && fn === lnC) ||
-        (ln === ptC && pt === lnC) ||
-        (fn === ptC && pt === fnC)
-    ) {
-        result = "Рекомендується: <b>Самостійно</b>";
-    }
-
-    else if (lnDiff.errors === 0 && lnDiff.similarErrors === 1 && totalErrors === 1) {
-        result = "Рекомендується: <b>Самостійно</b>";
-    }
-
-    else if (lnDiff.errors > 0) {
-        result = "Рекомендується: <b>Через ВОПЗК</b>";
-    }
-
-    else if (lnDiff.similarErrors >= 2) {
-        result = "Рекомендується: <b>Через ВОПЗК</b>";
-    }
-
-    else if (totalErrors <= 2) {
-        result = "Рекомендується: <b>Самостійно</b>";
-    }
-
+    // ---- Логіка по прізвищу ----
+    if (sur.mistakes === 0) {
+        surnameOK = true;
+    } 
+    else if (sur.mistakes === 1 && sur.similarMistakes === 1) {
+        surnameOK = true; // 1 співзвучна помилка = норм
+    } 
     else {
-        result = "Рекомендується: <b>Через ВОПЗК</b>";
+        surnameOK = false; // 2+ або 1 несозвучна
+    }
+
+    // ---- Підрахунок помилок в імені + по батькові ----
+    const otherMistakes = name.mistakes + patr.mistakes;
+
+    // ---- Умова ВОПЗК ----
+    let result = "Самостійно";
+
+    if (!surnameOK) {
+        result = "ВОПЗК";
+    } 
+    else if (sur.mistakes === 1 && sur.similarMistakes === 1 && otherMistakes > 0) {
+        // 1 співзвучна в прізвищі + хоч 1 помилка в інших → ВОПЗК
+        result = "ВОПЗК";
+    } 
+    else if (otherMistakes > 2) {
+        result = "ВОПЗК";
     }
 
     showModal(result);
 }
 
+// ---- Модальне вікно ----
 function showModal(text) {
-    document.getElementById("modal-text").innerHTML = text;
-    modal.style.display = "flex";
+    const modal = document.getElementById("resultModal");
+    const msg = document.getElementById("modalText");
 
-    // перезапуск анімації pop
-    modalContent.classList.remove("pop");
-    void modalContent.offsetWidth;
-    modalContent.classList.add("pop");
+    msg.textContent = text;
+    modal.classList.add("show");
+
+    setTimeout(() => {
+        modal.classList.remove("show");
+    }, 2500);
 }
