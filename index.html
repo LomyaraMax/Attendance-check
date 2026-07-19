@@ -3,59 +3,696 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Аналізатор ПІБ</title>
-    <link rel="stylesheet" href="style.css">
+    <title>N O I R — Меню</title>
+    <!-- Підключаємо контрастні преміальні шрифти -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0a0a0a; /* Глибокий оксамитовий чорний */
+            --bg-card: #141414; /* Вугільний колір для карток та модалок */
+            --text-main: #f5f5f5; /* Чистий світлий відтінок для тексту */
+            --text-muted: #8e8e93; /* Приглушений сірий */
+            --accent: #d4af37; /* Благородне золото */
+            --border-color: #222222; /* Тонкі темні межі */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-bottom: 90px;
+        }
+
+        /* Шапка з логотипом */
+        header {
+            text-align: center;
+            padding: 45px 20px 25px;
+            background-color: var(--bg-color);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 32px;
+            font-weight: 400;
+            letter-spacing: 12px;
+            text-transform: uppercase;
+            color: var(--text-main);
+            display: inline-block;
+            position: relative;
+            padding-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: 10px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-top: 6px;
+            font-weight: 400;
+        }
+
+        /* Навігація по категоріях (Скролл-бар) */
+        nav {
+            position: sticky;
+            top: 128px; /* Підлаштовано під нову висоту шапки */
+            background-color: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 0;
+        }
+
+        .categories {
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 0 20px;
+            scroll-behavior: smooth;
+        }
+
+        .categories::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 6px 14px;
+            margin-right: 6px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            font-weight: 400;
+            border: 1px solid transparent;
+        }
+
+        .category-link.active {
+            color: var(--accent);
+            border-color: var(--accent);
+            background-color: transparent;
+        }
+
+        /* Контейнер меню */
+        section {
+            scroll-margin-top: 195px;
+        }
+        .menu-container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 24px;
+            font-weight: 400;
+            letter-spacing: 4px;
+            margin: 50px 0 25px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::after {
+            content: '';
+            flex-grow: 1;
+            height: 1px;
+            background: linear-gradient(to right, var(--border-color), transparent);
+            margin-left: 20px;
+        }
+
+        /* Картка страви */
+        .menu-item {
+            margin-bottom: 35px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        /* Картинки до страв */
+        .item-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            filter: brightness(0.9) contrast(1.05); /* Легкий кінематографічний ефект */
+        }
+
+        .item-details {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .item-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 19px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            padding-right: 15px;
+        }
+
+        .price-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .item-price {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--accent);
+            white-space: nowrap;
+        }
+
+        /* Кнопка Обраного (Сердечко) */
+        .fav-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+
+        .fav-btn:active {
+            transform: scale(1.2);
+        }
+
+        .fav-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.5;
+            transition: fill 0.2s ease, stroke 0.2s ease;
+        }
+
+        .fav-btn.is-favorite {
+            color: var(--accent);
+        }
+
+        .fav-btn.is-favorite svg {
+            fill: var(--accent);
+            stroke: var(--accent);
+        }
+
+        .item-description {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 300;
+            line-height: 1.5;
+        }
+
+        .item-meta {
+            font-size: 11px;
+            color: var(--accent);
+            opacity: 0.7;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Плаваюча нижня кнопка Обраного */
+        .floating-fav-trigger {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: var(--accent);
+            color: var(--bg-color);
+            padding: 16px 28px;
+            border-radius: 4px; /* Гостріші кути для люкс-атмосфери */
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: none;
+            cursor: pointer;
+            z-index: 99;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .floating-fav-trigger.visible {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .fav-count {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-size: 10px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* Оверлей (екран) зі списком обраного */
+        .fav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .fav-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .fav-modal {
+            background-color: var(--bg-card);
+            border-top: 1px solid var(--accent);
+            width: 100%;
+            max-height: 80vh;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            padding: 35px 24px 40px;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .fav-overlay.open .fav-modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            font-weight: 400;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: color 0.2s ease;
+            padding: 5px;
+        }
+
+        .close-modal:hover {
+            color: var(--text-main);
+        }
+
+        .fav-items-list {
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .fav-modal-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .fav-modal-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 17px;
+            font-weight: 400;
+        }
+
+        .fav-modal-price {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-left: auto;
+            margin-right: 15px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
 
-<div class="container fade-in">
-    <h1>Аналізатор ПІБ</h1>
+    <header>
+        <div class="logo">Noir</div>
+        <div class="subtitle">lounge & kitchen</div>
+    </header>
 
-    <div class="block">
-        <h2>Як у накладній</h2>
-        <div class="input-group">
-            <label>Прізвище</label>
-            <input id="ln_input" type="text">
+    <nav>
+        <div class="categories">
+            <a href="#first" class="category-link active">Перші страви</a>
+            <a href="#main" class="category-link">Основні страви</a>
+            <a href="#snacks" class="category-link">Закуски</a>
+            <a href="#drinks" class="category-link">Напої</a>
+            <a href="#alcohol" class="category-link">Алкоголь</a>
         </div>
-        <div class="input-group">
-            <label>Імʼя</label>
-            <input id="fn_input" type="text">
-        </div>
-        <div class="input-group">
-            <label>По батькові</label>
-            <input id="pt_input" type="text">
+    </nav>
+
+    <main class="menu-container">
+
+        <!-- ПЕРШІ СТРАВИ -->
+        <section id="first">
+            <h2 class="section-title">Перші страви</h2>
+            
+            <div class="menu-item" data-id="1">
+                <img src="https://images.unsplash.com/photo-1547592165-e1d17fed6005?q=80&w=600&auto=format&fit=crop" alt="Крем-суп із лісових грибів" class="item-image">
+                <div class="item-details">
+                    <div class="item-header">
+                        <span class="item-title">Крем-суп із лісових грибів</span>
+                        <div class="price-wrapper">
+                            <span class="item-price">180 ₴</span>
+                            <button class="fav-btn" aria-label="Додати до обраного">
+                                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="item-description">Ароматні білі гриби та печериці з вершками, трюфельною олією та хрусткими грінками.</p>
+                    <div class="item-meta">300 г</div>
+                </div>
+            </div>
+
+            <div class="menu-item" data-id="2">
+                <img src="https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?q=80&w=600&auto=format&fit=crop" alt="Том Ям з креветками" class="item-image">
+                <div class="item-details">
+                    <div class="item-header">
+                        <span class="item-title">Том Ям з креветками</span>
+                        <div class="price-wrapper">
+                            <span class="item-price">290 ₴</span>
+                            <button class="fav-btn" aria-label="Додати до обраного">
+                                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="item-description">Класичний гострий тайський суп на кокосовом молоці з тигровими креветками, кальмарами та грибами шиїтаке.</p>
+                    <div class="item-meta">350 г</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ОСНОВНІ СТРАВИ -->
+        <section id="main">
+            <h2 class="section-title">Основні страви</h2>
+
+            <div class="menu-item" data-id="3">
+                <img src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?q=80&w=600&auto=format&fit=crop" alt="Стейк Рібай" class="item-image">
+                <div class="item-details">
+                    <div class="item-header">
+                        <span class="item-title">Стейк Рібай з перцевим соусом</span>
+                        <div class="price-wrapper">
+                            <span class="item-price">650 ₴</span>
+                            <button class="fav-btn" aria-label="Додати до обраного">
+                                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="item-description">Соковита яловичина зернової відгодівлі, обмагана на грилі з гілочкою розмарину та часником.</p>
+                    <div class="item-meta">250/50 г</div>
+                </div>
+            </div>
+
+            <div class="menu-item" data-id="4">
+                <img src="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?q=80&w=600&auto=format&fit=crop" alt="Філе дорадо" class="item-image">
+                <div class="item-details">
+                    <div class="item-header">
+                        <span class="item-title">Філе дорадо з лимонним різотто</span>
+                        <div class="price-wrapper">
+                            <span class="item-price">390 ₴</span>
+                            <button class="fav-btn" aria-label="Додати до обраного">
+                                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="item-description">Ніжне філе риби на подушці з кремового різотто з додаванням цедри лимона та білого вина.</p>
+                    <div class="item-meta">300 г</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ЗАКУСКИ -->
+        <section id="snacks">
+            <h2 class="section-title">Закуски</h2>
+            
+            <div class="menu-item" data-id="5">
+                <img src="https://images.unsplash.com/photo-1541532713592-79a0317b6b77?q=80&w=600&auto=format&fit=crop" alt="Сет брускет" class="item-image">
+                <div class="item-details">
+                    <div class="item-header">
+                        <span class="item-title">Сет брускет</span>
+                        <div class="price-wrapper">
+                            <span class="item-price">195 ₴</span>
+                            <button class="fav-btn" aria-label="Додати до обраного">
+                                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="item-description">Три види брускет: з томатами та базиліком, зі слабосолоним лососем, з в'яленими томатами та страчателлою.</p>
+                    <div class="item-meta">180 г</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- НАПОЇ -->
+        <section id="drinks">
+            <h2 class="section-title">Напої</h2>
+            
+            <div class="menu-item" data-id="6">
+                <img src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=600&auto=format&fit=crop" alt="Домашній лимонад" class="item-image">
+                <div class="item-details">
+                    <div class="item-header">
+                        <span class="item-title">Домашній лимонад Огірок-Базилік</span>
+                        <div class="price-wrapper">
+                            <span class="item-price">95 ₴</span>
+                            <button class="fav-btn" aria-label="Додати до обраного">
+                                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="item-description">Освіжаючий мікс із свіжого огірка, зеленого базиліку та соку лайма.</p>
+                    <div class="item-meta">400 мл</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- АЛКОГОЛЬ -->
+        <section id="alcohol">
+            <h2 class="section-title">Алкоголь</h2>
+            
+            <div class="menu-item" data-id="7">
+                <img src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?q=80&w=600&auto=format&fit=crop" alt="Келих вина" class="item-image">
+                <div class="item-details">
+                    <div class="item-header">
+                        <span class="item-title">Келих Sauvignon Blanc</span>
+                        <div class="price-wrapper">
+                            <span class="item-price">210 ₴</span>
+                            <button class="fav-btn" aria-label="Додати до обраного">
+                                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="item-description">Сухе біле вино з яскравими нотами аґрусу, маракуї та свіжоскошеної трави. Нова Зеландія.</p>
+                    <div class="item-meta">150 мл</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Нижня плаваюча кнопка "Обране" -->
+    <button class="floating-fav-trigger" id="favTrigger">
+        Обране <span class="fav-count" id="favCount">0</span>
+    </button>
+
+    <!-- Вікно зі списком обраних страв -->
+    <div class="fav-overlay" id="favOverlay">
+        <div class="fav-modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Обрані страви</h3>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <div class="fav-items-list" id="favItemsList">
+                <!-- Сюди JavaScript додасть обрані страви -->
+            </div>
         </div>
     </div>
 
-    <div class="block">
-        <h2>Правильне ПІБ</h2>
-        <div class="input-group">
-            <label>Прізвище</label>
-            <input id="ln_correct" type="text">
-        </div>
-        <div class="input-group">
-            <label>Імʼя</label>
-            <input id="fn_correct" type="text">
-        </div>
-        <div class="input-group">
-            <label>По батькові</label>
-            <input id="pt_correct" type="text">
-        </div>
-    </div>
+    <script>
+        // --- 1. Логіка скролла та перемикання категорій ---
+        const links = document.querySelectorAll('.category-link');
+        const sections = document.querySelectorAll('section');
 
-    <button id="analyzeBtn" class="btn-animate">Аналізувати</button>
-</div>
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= (sectionTop - 195)) {
+                    current = section.getAttribute('id');
+                }
+            });
 
-<!-- Модальне вікно -->
-<div id="modal" class="modal">
-    <div class="modal-content pop">
-        <p id="modal-text"></p>
-        <button id="closeModal">Закрити</button>
-    </div>
-</div>
+            links.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                    link.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
+            });
+        });
 
-<script src="script.js"></script>
+        // --- 2. Логика інтерактивного Обраного ---
+        const favorites = new Set();
+        const favTrigger = document.getElementById('favTrigger');
+        const favCount = document.getElementById('favCount');
+        const favOverlay = document.getElementById('favOverlay');
+        const closeModal = document.getElementById('closeModal');
+        const favItemsList = document.getElementById('favItemsList');
+
+        document.querySelectorAll('.fav-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const menuItem = btn.closest('.menu-item');
+                const itemId = menuItem.getAttribute('data-id');
+                const title = menuItem.querySelector('.item-title').textContent;
+                const price = menuItem.querySelector('.item-price').textContent;
+
+                if (btn.classList.contains('is-favorite')) {
+                    btn.classList.remove('is-favorite');
+                    removeFavorite(itemId);
+                } else {
+                    btn.classList.add('is-favorite');
+                    addFavorite(itemId, title, price);
+                }
+                updateFloatingButton();
+            });
+        });
+
+        function addFavorite(id, title, price) {
+            for (let item of favorites) {
+                if (item.id === id) return;
+            }
+            favorites.add({ id, title, price });
+        }
+
+        function removeFavorite(id) {
+            for (let item of favorites) {
+                if (item.id === id) {
+                    favorites.delete(item);
+                    break;
+                }
+            }
+            const mainItemBtn = document.querySelector(`.menu-item[data-id="${id}"] .fav-btn`);
+            if (mainItemBtn) mainItemBtn.classList.remove('is-favorite');
+        }
+
+        function updateFloatingButton() {
+            favCount.textContent = favorites.size;
+            if (favorites.size > 0) {
+                favTrigger.classList.add('visible');
+            } else {
+                favTrigger.classList.remove('visible');
+                favOverlay.classList.remove('open');
+            }
+        }
+
+        function renderModalItems() {
+            favItemsList.innerHTML = '';
+            
+            if (favorites.size === 0) {
+                favItemsList.innerHTML = '<p style="color: var(--text-muted); font-size: 14px; text-align: center; margin-top: 20px;">Список порожній</p>';
+                return;
+            }
+
+            favorites.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'fav-modal-item';
+                row.innerHTML = `
+                    <span class="fav-modal-title">${item.title}</span>
+                    <span class="fav-modal-price">${item.price}</span>
+                    <button class="fav-btn is-favorite" data-remove-id="${item.id}">
+                        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </button>
+                `;
+                favItemsList.appendChild(row);
+            });
+
+            favItemsList.querySelectorAll('[data-remove-id]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = btn.getAttribute('data-remove-id');
+                    removeFavorite(id);
+                    updateFloatingButton();
+                    renderModalItems();
+                });
+            });
+        }
+
+        favTrigger.addEventListener('click', () => {
+            renderModalItems();
+            favOverlay.classList.add('open');
+        });
+
+        closeModal.addEventListener('click', () => {
+            favOverlay.classList.remove('open');
+        });
+
+        favOverlay.addEventListener('click', (e) => {
+            if (e.target === favOverlay) {
+                favOverlay.classList.remove('open');
+            }
+        });
+    </script>
 </body>
 </html>
-
-
